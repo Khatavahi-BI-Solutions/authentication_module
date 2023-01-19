@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include authentication_module *.css
+recursive-include authentication_module *.csv
+recursive-include authentication_module *.html
+recursive-include authentication_module *.ico
+recursive-include authentication_module *.js
+recursive-include authentication_module *.json
+recursive-include authentication_module *.md
+recursive-include authentication_module *.png
+recursive-include authentication_module *.py
+recursive-include authentication_module *.svg
+recursive-include authentication_module *.txt
+recursive-exclude authentication_module *.pyc
