@@ -68,21 +68,20 @@ class ApiEndpoint(object):
 		has_request = frappe.request
 		if has_request:
 			frappe.local.response.http_status_code = self.code
-		developer_message = developer_message or message
 
-		if self.exception and not error_code:
-			error_code = self.exception.__class__.__name__
+		if self.exception and not self.error_code:
+			self.error_code = self.exception.__class__.__name__
 
-		if error_code and not message:
-			message = f"Server Error ({error_code})"
+		if self.error_code and not self.message:
+			self.message = f"Server Error ({self.error_code})"
 
-		if error_code:
-			org_message = message
-			message = frappe._(error_code)
-			if message == error_code:
-				message = org_message
+		if self.error_code:
+			org_message = self.message
+			self.message = frappe._(self.error_code)
+			if self.message == self.error_code:
+				self.message = org_message
 		else:
-			message = frappe._(message)
+			self.message = frappe._(self.message)
 
 		
 		frappe.local.response["message"] = self.message
