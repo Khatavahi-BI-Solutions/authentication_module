@@ -53,11 +53,12 @@ login.bind_events = function () {
 					frappe.msgprint(r.message)
 				}
 				else{
+					login.set_status('{{ _("Verifing...") }}');
 					location.reload();
 				}
 			},
 		});
-		login.set_status('{{ _("Verifing...") }}');
+		// login.set_status('{{ _("Verifing...") }}');
 		// frappe.msgprint(_verify.token + "......." + _verify.otp);
 		return false;
 	});
