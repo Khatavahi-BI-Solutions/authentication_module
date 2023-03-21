@@ -49,8 +49,11 @@ login.bind_events = function () {
 				'otp': _verify.otp
 			},
 			success: function(r) {
-				if (!r.exc) {
+				if (r.message == "Invalid OTP"){
 					frappe.msgprint(r.message)
+				}
+				else{
+					location.reload();
 				}
 			},
 		});
