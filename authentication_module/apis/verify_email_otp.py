@@ -27,6 +27,9 @@ class VerifyEmailOTP(ApiEndpoint):
 		self.otp = body.get('otp')
 		self.token = body.get('token')
 		self.phone = self.token
+		self.authtype = body.get('authtype')
+		if not self.authtype:
+			self.authtype = False
 
 		self.get_details_catch()
 
@@ -45,16 +48,16 @@ class VerifyEmailOTP(ApiEndpoint):
 			self.set_details_catch()
 			return
 		else:
-			self.create_user()
+			user = frappe.get_value("User", {"email": self.entity})
+			if user:
+				self.user_name = user
+			else:
+				self.create_user()
+			self.set_user()
 			self.create_client()
 			self.start_session()
 			self.delete_details_catch()
 		return
-	
-	def set_user(self):
-		user = frappe.get_value("User", {"email": self.email})
-		if not user:
-			self.create_user()
 	
 	def delete_details_catch(self):
 		frappe.cache().hdel('request_otp', self.token)
@@ -80,7 +83,10 @@ class VerifyEmailOTP(ApiEndpoint):
 		frappe.cache().hset('request_otp', self.token, data)
 
 	def set_api_key(self):
-		user = self.user
+		if not self.user:
+			user = frappe.get_doc("User", self.user_name)
+		else:
+			user = self.user
 		api_secret = frappe.generate_hash(length=15)
 		# if api key is not set generate api key
 		if not user.api_key:
@@ -94,7 +100,10 @@ class VerifyEmailOTP(ApiEndpoint):
 		frappe.local.response["token"] = token
 
 	def start_session(self):
-		self.set_api_key()
+		if self.authtype == "mobile":
+			self.set_api_key()
+		else:
+			frappe.local.login_manager.login_as(self.user_name)
 
 	def create_user(self):
 		user = frappe.new_doc("User")
@@ -104,13 +113,16 @@ class VerifyEmailOTP(ApiEndpoint):
 		user.flags.ignore_permissions = True
 		user.insert()
 		self.user = user
+		self.user_name = user.name
 		print("User Created")
 
 		portal_settings = frappe.get_single("Portal Settings")
 		default_role = portal_settings.default_role
 		if default_role:
 			user.add_roles(default_role)
-		frappe.set_user(self.user.name)
+	
+	def set_user(self):
+		frappe.set_user(self.user_name)
 
 	def create_client(self):
 		pass
