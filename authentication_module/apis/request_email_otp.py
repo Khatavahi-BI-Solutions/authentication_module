@@ -11,7 +11,7 @@ class RequestEmailOTP(ApiEndpoint):
 		super(RequestEmailOTP, self).__init__("RequestEmailOTP")
 
 	def default(self, *args, **kwargs):
-		body = self.json_body()
+		body = self.form_body()
 		self.body = body
 		required_field = [
 			"email"
@@ -21,15 +21,15 @@ class RequestEmailOTP(ApiEndpoint):
 			body, required_field)
 		if not valid:
 			return
-
 		self.email = body.get('email')
-
 		self.set_token()
 
 		self.store_details_catch()
 
 		self.send_otp()
+
 		self.set_resend_time()
+
 		return
 
 	def set_resend_time(self):

@@ -16,7 +16,7 @@ class VerifyEmailOTP(ApiEndpoint):
 		super(VerifyEmailOTP, self).__init__("VerifyEmailOTP")
 
 	def default(self, *args, **kwargs):
-		body = self.json_body()
+		body = self.form_body()
 		self.body = body
 		valid = self.validate_required_parameters(
 			body, ["token", "otp"])
