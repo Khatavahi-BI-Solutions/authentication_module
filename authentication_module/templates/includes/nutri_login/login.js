@@ -49,12 +49,16 @@ login.bind_events = function () {
 				'otp': _verify.otp
 			},
 			success: function(r) {
-				if (!r.exc) {
+				if (r.message == "Invalid OTP"){
 					frappe.msgprint(r.message)
+				}
+				else{
+					login.set_status('{{ _("Verifing...") }}');
+					location.reload();
 				}
 			},
 		});
-		login.set_status('{{ _("Verifing...") }}');
+		// login.set_status('{{ _("Verifing...") }}');
 		// frappe.msgprint(_verify.token + "......." + _verify.otp);
 		return false;
 	});

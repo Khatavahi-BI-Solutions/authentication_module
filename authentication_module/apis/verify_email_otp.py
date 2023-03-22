@@ -44,11 +44,10 @@ class VerifyEmailOTP(ApiEndpoint):
 
 		if not valid:
 			self.message = "Invalid OTP"
-			self.code = 401
 			self.set_details_catch()
 			return
 		else:
-			user = frappe.get_value("User", {"email": self.entity})
+			user = frappe.get_value("User", {"email": self.token})
 			if user:
 				self.user_name = user
 			else:
