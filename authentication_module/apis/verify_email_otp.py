@@ -3,7 +3,7 @@ import base64
 
 import frappe
 
-from authentication_module import ApiEndpoint
+from authentication_module.api import ApiEndpoint
 from authentication_module.utils import verify_email_otp
 
 @frappe.whitelist(allow_guest=True)

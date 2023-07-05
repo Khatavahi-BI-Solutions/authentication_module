@@ -1,5 +1,5 @@
 import frappe
-from authentication_module import ApiEndpoint
+from authentication_module.api import ApiEndpoint
 from authentication_module.utils import send_otp_mail
 
 @frappe.whitelist(allow_guest=True)
