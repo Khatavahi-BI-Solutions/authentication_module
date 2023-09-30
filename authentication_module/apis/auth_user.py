@@ -45,5 +45,5 @@ class Authenticate(ApiEndpoint):
         user.save(ignore_permissions=True)
         frappe.db.commit()
         token = base64.b64encode(
-            (user.api_key+":"+api_secret).encode('ascii')).decode('ascii')
+            (user.api_key+":"+user.get_password('api_secret')).encode('ascii')).decode('ascii')
         frappe.local.response["token"] = token
