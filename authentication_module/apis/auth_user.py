@@ -13,6 +13,8 @@ class Authenticate(ApiEndpoint):
         super(Authenticate, self).__init__("VerifyEmailOTP")
 
     def default(self, *args, **kwargs):
+        print(args)
+        print(kwargs)
         body = self.form_body()
         self.body = body
         valid = self.validate_required_parameters(
@@ -23,12 +25,14 @@ class Authenticate(ApiEndpoint):
 
         self.email = body.get('email')
         self.pwd = body.get('pwd')
-
-        frappe.local.login_manager.authenticate(user=self.email, pwd=self.pwd)
-        
-        self.set_api_key()
-        
-        return "Success"
+        try:
+            frappe.local.login_manager.authenticate(user=self.email, pwd=self.pwd)
+            self.set_api_key()
+            return "Success"
+        except frappe.AuthenticationError:
+            self.message = "Invalid User/PWD"
+            self.code = 401
+            self.error_code = 401
 
     def set_api_key(self):
         user = frappe.get_doc("User", self.email)
